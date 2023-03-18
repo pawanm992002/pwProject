@@ -1,20 +1,65 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from "react";
+import "react-native-gesture-handler";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import LoginScreen from "./src/screens/LoginScreen/LoginScreen";
+import RegistrationScreen from "./src/screens/RegistrationScreen/RegistrationScreen";
+import ContactsPage from "./src/screens/ContactsPage/ContactsPage";
+import ChatScreen from "./src/screens/ChatScreen/ChatScreen";
+import Home from "./src/screens/Home";
+
+import { decode, encode } from "base-64";
+if (!global.btoa) {
+  global.btoa = encode;
+}
+if (!global.atob) {
+  global.atob = decode;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const Stack = createStackNavigator();
+export default function App() {
+  const [user, setUser] = useState(null);
+  const retrieveData = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        setUser(JSON.parse(value));
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    retrieveData("userInfo");
+  }, []);
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        {user ? (
+          <>
+            <Stack.Screen name="Home">
+              {(props) => <Home {...props} user={user} setUser={setUser} />}
+            </Stack.Screen>
+            <Stack.Screen name="Contacts">
+              {(props) => <ContactsPage {...props} user={user} />}
+            </Stack.Screen>
+            <Stack.Screen name="Chat">
+              {(props) => <ChatScreen {...props} />}
+            </Stack.Screen>
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Registration" component={RegistrationScreen} />
+            <Stack.Screen name="Login">
+              {(props) => <LoginScreen {...props} setUser={setUser} />}
+            </Stack.Screen>
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
