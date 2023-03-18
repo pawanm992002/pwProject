@@ -10,6 +10,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import styles from "./styles";
 import firebase from "../../firebase/config";
+import { Dropdown } from "react-native-element-dropdown";
 
 export default function RegistrationScreen({ navigation }) {
   const [fullName, setFullName] = useState("");
@@ -18,6 +19,13 @@ export default function RegistrationScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isFarmer, setIsFarmer] = useState(false);
+
+  const StateOptions = [
+    { label: "rajasthan", value: "rajasthan" },
+    { label: "gujrat", value: "gujrat" },
+    { label: "mp", value: "mp" },
+    { label: "up", value: "up" },
+  ];
 
   const onFooterLinkPress = () => {
     navigation.navigate("Login");
@@ -63,7 +71,7 @@ export default function RegistrationScreen({ navigation }) {
       >
         <Image
           style={styles.logo}
-          source={require("../../../assets/icon.png")}
+          source={require("../../../assets/register.webp")}
         />
         <TextInput
           style={styles.input}
@@ -83,14 +91,16 @@ export default function RegistrationScreen({ navigation }) {
           underlineColorAndroid="transparent"
           autoCapitalize="none"
         />
-        <TextInput
+        <Dropdown
           style={styles.input}
-          placeholder="State"
-          placeholderTextColor="#aaaaaa"
-          onChangeText={(text) => setState(text)}
+          data={StateOptions}
+          search
+          labelField="label"
+          valueField="value"
           value={state}
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
+          onChange={(item) => {
+            setState(item.value);
+          }}
         />
 
         <TextInput

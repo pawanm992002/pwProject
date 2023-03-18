@@ -22,7 +22,7 @@ const Cards = () => {
       setData(res.data);
       setstate(true);
     };
-    GetPosts();
+    // GetPosts();
   }, []);
   return (
     <View>

@@ -61,9 +61,9 @@ export default function ContactsPage({ navigation, user }) {
           <View style={styles.listContainer}>
             <FlatList
               data={contacts}
-              renderItem={({ item }) => <ChatComp user={item} key={item.id} />}
+              renderItem={({ item }) => <ChatComp user={item} />}
               keyExtractor={(item) => {
-                item.id;
+                return item.id;
               }}
             />
           </View>

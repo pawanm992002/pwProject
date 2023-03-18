@@ -18,9 +18,10 @@ export default function ChatScreen({ route }) {
 
   const handleSend = async () => {
     const data = {
+      sender: sender,
       receiver: receiver,
       message: message,
-      // createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      createdAt: Date(),
     };
     const chatRef = firebase.firestore().collection("chats");
     const currdoc = chatRef.doc(sender);
@@ -38,26 +39,46 @@ export default function ChatScreen({ route }) {
   };
 
   useEffect(() => {
-    const fetchMessage = () => {
-      const chatRef = firebase.firestore().collection("chats");
-      const currdoc = chatRef.doc(sender);
-      currdoc.get().then((res) => {
-        let arr = res.data();
-        if (arr) {
-          const filtered = arr.msg.filter((val) => {
-            if (val.receiver === receiver) return val;
+    let showChat = [];
+    const chatRef = firebase.firestore().collection("chats");
+    chatRef.onSnapshot((temp) => {
+      temp.forEach((doc) => {
+        if (doc) {
+          let docDate = doc.data().msg;
+          let x = docDate.filter((fields) => {
+            if (
+              (fields.sender === sender && fields.receiver === receiver) ||
+              (fields.sender === receiver && fields.receiver === sender)
+            ) {
+              return fields;
+            }
           });
-          setMessages(filtered);
+          showChat = [...x, ...showChat];
         }
       });
-    };
-    fetchMessage();
-  }, [messages]);
+      setMessages(showChat);
+      messages.sort((a, b) => {
+        if (a.createdAt < b.createdAt) return -1;
+        else return 1;
+      });
+    });
+  }, []);
 
   const renderItem = ({ item }) => {
     return (
-      <View style={styles.message}>
-        <Text>{item.message}</Text>
+      <View
+        style={{
+          alignItems: item.sender === sender ? "flex-end" : "flex-start",
+        }}
+      >
+        <Text
+          style={{
+            ...styles.message,
+            backgroundColor: item.sender === sender ? "#b5d7e8" : "#f2aaa5",
+          }}
+        >
+          {item.message}
+        </Text>
       </View>
     );
   };
@@ -94,6 +115,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
     marginHorizontal: 10,
+    width: "80%",
   },
   footer: {
     flexDirection: "row",
@@ -107,5 +129,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginRight: 10,
     paddingVertical: 5,
+    height: 50,
   },
 });
