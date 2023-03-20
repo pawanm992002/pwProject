@@ -13,7 +13,7 @@ export default StyleSheet.create({
     width: "100%",
   },
   title: {
-    width: "75%",
+    width: "70%",
     fontSize: 30,
     color: "#804000",
     fontWeight: "bold",

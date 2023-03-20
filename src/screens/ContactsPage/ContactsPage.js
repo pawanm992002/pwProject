@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styles from "./styles";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import firebase from "../../firebase/config";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export default function ContactsPage({ navigation, user }) {
   const [contacts, setContacts] = useState([]);
@@ -11,7 +13,11 @@ export default function ContactsPage({ navigation, user }) {
     const snapshot = await usersRef.get();
     const users = [];
     snapshot.forEach((doc) => {
-      if (user.isFarmer && !doc.data().isFarmer) {
+      if (
+        user.isFarmer &&
+        !doc.data().isFarmer &&
+        doc.data().state === user.state
+      ) {
         users.push(doc.data());
       } else if (!user.isFarmer && doc.data().isFarmer) {
         users.push(doc.data());
@@ -23,6 +29,7 @@ export default function ContactsPage({ navigation, user }) {
   useEffect(() => {
     fetchContacts();
   }, []);
+
   const openContact = (receiver) => {
     navigation.navigate("Chat", { user, receiver });
   };
@@ -44,8 +51,14 @@ export default function ContactsPage({ navigation, user }) {
   const showProfle = () => {};
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.nav}>
+        <Icon
+          style={{ marginLeft: 8, marginTop: 10 }}
+          name="arrow-back"
+          size={30}
+          onPress={() => navigation.goBack()}
+        />
         <Text style={styles.title}>{user.fullName}</Text>
         <TouchableOpacity
           onPress={showProfle}
@@ -69,6 +82,6 @@ export default function ContactsPage({ navigation, user }) {
           </View>
         )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

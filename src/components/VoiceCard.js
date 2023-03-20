@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 // import { useSpeech } from 'expo-speech';
-import * as Speech from 'expo-speech';
+import * as Speech from "expo-speech";
 const VoiceCard = ({ text }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-useEffect(() => {
-   const voiceOptions = async()=>{
+  useEffect(() => {
+    const voiceOptions = async () => {
       await Speech.getAvailableVoicesAsync();
-   }
-   voiceOptions();
-}, []);
+    };
+    voiceOptions();
+  }, []);
 
-
-  const handleSpeak =() => {
-       Speech.speak(text);
+  const handleSpeak = () => {
+    Speech.speak(text);
   };
 
   return (
@@ -28,10 +27,10 @@ useEffect(() => {
 
 const styles = {
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 16,
     borderRadius: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -42,8 +41,8 @@ const styles = {
   },
   text: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
 };
 

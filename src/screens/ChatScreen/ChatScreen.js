@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import { FontAwesome } from "react-native-vector-icons";
 import firebase from "../../firebase/config";
+import Navbar from "../../components/Navbar";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ChatScreen({ route }) {
   const [message, setMessage] = useState("");

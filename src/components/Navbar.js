@@ -1,44 +1,3 @@
-// import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-// import React from 'react';
-// import { MaterialCommunityIcons } from '@expo/vector-icons';
-// const Navbar = () => {
-//   return (
-//     <View style={styles.navbar}>
-//     <Image  style={styles.logo}
-//     source={{
-//       uri: 'https://picsum.photos/50/50',
-//     }}
-//     />
-//       <Text style={styles.textLogo}>Kisan Mitra</Text>
-//       <TouchableOpacity>
-//       <MaterialCommunityIcons name="hamburger" size={30} color="black" />
-//       </TouchableOpacity>
-//     </View>
-//   )
-// }
-
-// const styles = StyleSheet.create({
-//     navbar:{
-//        flexDirection:'row',
-//        justifyContent:'space-between',
-//        paddingHorizontal:10,
-//        paddingVertical:5,
-//        alignItems:'center',
-//        backgroundColor:"grey"
-//     },
-//     textLogo:{
-//         fontSize:25,
-//         fontStyle:'italic',
-//         color:'blue'
-//     },
-//     logo:{
-//         width:50,
-//         height:50,
-//         borderRadius:50
-//     }
-// })
-
-// export default Navbar;
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -50,7 +9,7 @@ const Navbar = ({ user, setUser, navigation }) => {
   };
 
   return (
-    <View style={styles.navbar}>
+    <View style={{ ...styles.navbar, zIndex: 100 }}>
       <Image
         style={styles.logo}
         source={{
@@ -67,10 +26,24 @@ const Navbar = ({ user, setUser, navigation }) => {
       <View style={Toggle ? styles.Visible : styles.Hide}>
         <View style={styles.content}>
           <View style={styles.parentComponent}>
-            <TouchableOpacity style={styles.styledBtn}>
+            {/* <TouchableOpacity
+              style={styles.styledBtn}
+              onPress={() => navigation.navigate("Home")}
+            >
+              <Text style={styles.btnText}>Home</Text>
+            </TouchableOpacity> */}
+            <TouchableOpacity
+              style={styles.styledBtn}
+              onPress={() => navigation.navigate("Profile")}
+            >
               <Text style={styles.btnText}>Profile</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.styledBtn}>
+            <TouchableOpacity
+              style={styles.styledBtn}
+              onPress={() => {
+                navigation.navigate("Schemes");
+              }}
+            >
               <Text style={styles.btnText}>Schemes for Farmers</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -92,7 +65,7 @@ const Navbar = ({ user, setUser, navigation }) => {
             navigation.navigate("Home");
           }}
         >
-          <Text style={styles.btnText}>Log out</Text>
+          <Text style={styles.logoutText}>Log out</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -111,7 +84,8 @@ const styles = StyleSheet.create({
   textLogo: {
     fontSize: 25,
     fontStyle: "italic",
-    color: "blue",
+    color: "white",
+    zIndex: 99,
   },
   logo: {
     width: 50,
@@ -125,7 +99,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 700,
     color: "white",
-    backgroundColor: "red",
+    backgroundColor: "grey",
   },
   Hide: {
     position: "absolute",
@@ -134,7 +108,6 @@ const styles = StyleSheet.create({
     width: 300,
     height: 700,
     color: "white",
-    backgroundColor: "red",
   },
   content: {
     marginTop: 200,
@@ -163,12 +136,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   btnText: {
-    color: "#FF0000",
+    color: "grey",
     fontSize: 16,
     fontWeight: "bold",
   },
   logout: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "red",
     borderRadius: 10,
     width: "60%",
     height: 50,
@@ -176,7 +149,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    bottom: 10,
+    bottom: 50,
+  },
+  logoutText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

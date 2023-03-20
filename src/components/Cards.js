@@ -22,12 +22,16 @@ const Cards = () => {
       setData(res.data);
       setstate(true);
     };
-    // GetPosts();
+    GetPosts();
   }, []);
   return (
     <View>
       <ScrollView style={styles.CardsStyle}>
-        {state ? Data.map((e) => <Card key={e._id} props={e} />) : null}
+        {state
+          ? Data
+            ? Data.map((e) => <Card key={e._id} props={e} />)
+            : null
+          : null}
       </ScrollView>
     </View>
   );
@@ -35,7 +39,7 @@ const Cards = () => {
 
 const styles = StyleSheet.create({
   CardsStyle: {
-    marginBottom: 200,
+    marginBottom: 100,
   },
 });
 export default Cards;
