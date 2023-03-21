@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styles from "./styles";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  ImageBackground,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import firebase from "../../firebase/config";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -13,13 +19,10 @@ export default function ContactsPage({ navigation, user }) {
     const snapshot = await usersRef.get();
     const users = [];
     snapshot.forEach((doc) => {
-      if (
-        user.isFarmer &&
-        !doc.data().isFarmer &&
-        doc.data().state === user.state
-      ) {
-        users.push(doc.data());
-      } else if (!user.isFarmer && doc.data().isFarmer) {
+      let temp = doc.data();
+      if (user.isFarmer && !temp.isFarmer && temp.state === user.state) {
+        users.push(temp);
+      } else if (!user.isFarmer && temp.isFarmer && temp.state === user.state) {
         users.push(doc.data());
       }
     });
@@ -51,37 +54,39 @@ export default function ContactsPage({ navigation, user }) {
   const showProfle = () => {};
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.nav}>
-        <Icon
-          style={{ marginLeft: 8, marginTop: 10 }}
-          name="arrow-back"
-          size={30}
-          onPress={() => navigation.goBack()}
-        />
-        <Text style={styles.title}>{user.fullName}</Text>
-        <TouchableOpacity
-          onPress={showProfle}
-          style={{ width: "25%", justifyContent: "center" }}
-        >
-          <Text style={{ color: "red" }}> Profile</Text>
-        </TouchableOpacity>
-      </View>
-      <View>
-        {!contacts ? (
-          <Text> no contacts </Text>
-        ) : (
-          <View style={styles.listContainer}>
-            <FlatList
-              data={contacts}
-              renderItem={({ item }) => <ChatComp user={item} />}
-              keyExtractor={(item) => {
-                return item.id;
-              }}
-            />
-          </View>
-        )}
-      </View>
-    </SafeAreaView>
+    <ImageBackground
+      style={{ zIndex: 1000, height: "100%" }}
+      source={require("../../../assets/contactBack.jpeg")}
+    >
+      <SafeAreaView style={styles.container}>
+        <View style={styles.nav}>
+          <Icon
+            name="arrow-back"
+            size={30}
+            onPress={() => navigation.goBack()}
+          />
+          <Text style={styles.title}>
+            {user.fullName.length > 10
+              ? user.fullName.substring(0, 10) + "..."
+              : "user.fullName"}
+          </Text>
+        </View>
+        <View>
+          {!contacts ? (
+            <Text> no contacts </Text>
+          ) : (
+            <View style={styles.listContainer}>
+              <FlatList
+                data={contacts}
+                renderItem={({ item }) => <ChatComp user={item} />}
+                keyExtractor={(item) => {
+                  return item.id;
+                }}
+              />
+            </View>
+          )}
+        </View>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }

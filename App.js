@@ -14,7 +14,6 @@ import ProfilePage from "./src/components/ProfilePage";
 import Home from "./src/screens/Home";
 
 import { decode, encode } from "base-64";
-import { Header } from "react-native-elements";
 if (!global.btoa) {
   global.btoa = encode;
 }
@@ -57,7 +56,9 @@ export default function App() {
             <Stack.Screen name="Schemes">
               {(props) => <SchemesPage {...props} />}
             </Stack.Screen>
-            <Stack.Screen name="Profile" component={ProfilePage} />
+            <Stack.Screen name="Profile">
+              {(props) => <ProfilePage {...props} user={user} />}
+            </Stack.Screen>
           </>
         ) : (
           <>

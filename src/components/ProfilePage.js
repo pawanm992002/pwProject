@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,34 +8,37 @@ import {
   TextInput,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import firebase from "../firebase/config";
+import axios from "axios";
+import Posts from "./Posts";
 
-const ProfilePage = () => {
-  const [imageUri, setImageUri] = useState(null);
-  const [text, setText] = useState();
-  const handleImageSelect = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      alert("Sorry, we need camera roll permissions to make this work!");
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    if (!result.cancelled) {
-      setImageUri(result.uri);
-    }
+const ProfilePage = ({ user }) => {
+  const [posts, setposts] = useState({});
+  const [text, setText] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // fetch all posts
+      const resp = await axios.get(
+        `https://farmerspost-production.up.railway.app/api/upload/userposts/${user.id}`
+      );
+      setposts(resp.data);
+    };
+    // fetchData();
+  }, []);
+
+  const submitBtnText = async () => {
+    const res = await axios.post(
+      `https://farmerspost-production.up.railway.app/api/upload/${user.id}/${user.state}/${text}`
+    );
+    console.log(res);
+    //  we have to reload window
+    // window.NavigationPreloadManager();
   };
   return (
     <View>
       <View style={styles.Box}>
         <Text style={styles.heading}> Create a post </Text>
-        {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
-        <TouchableOpacity onPress={handleImageSelect} style={styles.button}>
-          <Text style={styles.buttonText}>Select Image</Text>
-        </TouchableOpacity>
         <TextInput
           style={{
             backgroundColor: "white",
@@ -48,10 +51,15 @@ const ProfilePage = () => {
           value={text}
           onChangeText={(t) => setText(t)}
         />
-        <TouchableOpacity style={styles.SubmitBtn}>
+        <TouchableOpacity style={styles.SubmitBtn} onPress={submitBtnText}>
           <Text style={styles.submitBtnText}> Submit </Text>
         </TouchableOpacity>
       </View>
+      {/* {posts
+        ? posts.map((e) => {
+            <Posts key={e.id} post={e} />;
+          })
+        : null} */}
     </View>
   );
 };

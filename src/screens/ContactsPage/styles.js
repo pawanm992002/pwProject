@@ -6,17 +6,16 @@ export default StyleSheet.create({
     alignItems: "center",
   },
   nav: {
-    textAlign: "center",
+    alignItems: "center",
     flexDirection: "row",
-    height: 50,
+    height: 60,
     backgroundColor: "#a3c2c2",
     width: "100%",
+    paddingLeft: 10,
   },
   title: {
-    width: "70%",
-    fontSize: 30,
+    fontSize: 20,
     color: "#804000",
-    fontWeight: "bold",
     paddingLeft: 20,
   },
   button: {

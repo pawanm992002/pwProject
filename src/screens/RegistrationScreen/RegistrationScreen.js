@@ -109,7 +109,7 @@ export default function RegistrationScreen({ navigation }) {
       >
         <Image
           style={styles.logo}
-          source={require("../../../assets/register.webp")}
+          source={require("../../../assets/loginimg.jpeg")}
         />
         <TextInput
           style={styles.input}

@@ -38,7 +38,6 @@ export default function LoginScreen({ navigation, setUser }) {
             }
             const user = firestoreDocument.data();
             setUser(user);
-            console.log(JSON.stringify(user));
             storeData("userInfo", JSON.stringify(user));
             navigation.navigate("Home");
           })
@@ -59,7 +58,7 @@ export default function LoginScreen({ navigation, setUser }) {
       >
         <Image
           style={styles.logo}
-          source={require("../../../assets/register.webp")}
+          source={require("../../../assets/loginimg.jpeg")}
         />
         <TextInput
           style={styles.input}

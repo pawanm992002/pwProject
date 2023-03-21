@@ -14,7 +14,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ChatScreen({ route }) {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
+  // const [messages, setMessages] = useState([]);
+  var showChats = [];
   const sender = route.params.user.id;
   const receiver = route.params.receiver.id;
 
@@ -30,41 +31,45 @@ export default function ChatScreen({ route }) {
     const isExists = (await currdoc.get()).data();
     if (isExists) {
       if (data.message) {
-        const arr = [...isExists.msg, data];
-        setMessages(arr);
-        currdoc.update({ msg: arr });
+        currdoc.update({ msg: [...isExists.msg, data] });
       }
     } else {
-      data.message !== "" ? currdoc.set({ msg: [data] }) : none;
+      if (data.message) {
+        currdoc.set({ msg: [data] });
+      }
     }
     setMessage("");
   };
 
   useEffect(() => {
-    let showChat = [];
-    const chatRef = firebase.firestore().collection("chats");
-    chatRef.onSnapshot((temp) => {
-      temp.forEach((doc) => {
-        if (doc) {
-          let docDate = doc.data().msg;
-          let x = docDate.filter((fields) => {
-            if (
-              (fields.sender === sender && fields.receiver === receiver) ||
-              (fields.sender === receiver && fields.receiver === sender)
-            ) {
-              return fields;
+    const fetchChat = () => {
+      const chatRef = firebase.firestore().collection("chats");
+      chatRef.onSnapshot((temp) => {
+        temp.forEach((doc) => {
+          if (doc) {
+            let docDate = doc.data().msg;
+            var x = docDate.filter((val) => {
+              if (
+                (val.sender === sender && val.receiver === receiver) ||
+                (val.sender === receiver && val.receiver === sender)
+              )
+                return val;
+            });
+            if (x) {
+              x.forEach((t) => {
+                if (t) showChats.push(t);
+              });
             }
-          });
-          showChat = [...x, ...showChat];
-        }
+          }
+        });
+        showChats.sort((a, b) => {
+          if (a.createdAt < b.createdAt) return -1;
+          else return 1;
+        });
       });
-      setMessages(showChat);
-      messages.sort((a, b) => {
-        if (a.createdAt < b.createdAt) return -1;
-        else return 1;
-      });
-    });
-  }, []);
+    };
+    fetchChat();
+  }, [showChats]);
 
   const renderItem = ({ item }) => {
     return (
@@ -88,9 +93,9 @@ export default function ChatScreen({ route }) {
   return (
     <View style={styles.container}>
       <FlatList
-        data={messages}
+        data={showChats}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.createdAt}
       />
       <View style={styles.footer}>
         <TextInput
